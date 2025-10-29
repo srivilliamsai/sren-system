@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: emotion-service
+  jpa:
+    hibernate.ddl-auto: update
+    show-sql: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+management.endpoints.web.exposure.include: "*"
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+server:
+  port: ${SERVER_PORT:9002}
+emotion:
+  pythonApiUrl: ${EMOTION_PYTHON_API_URL:http://localhost:5001}

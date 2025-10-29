@@ -1,0 +1,200 @@
+version: "3.9"
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports: ["3306:3306"]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks: [sren]
+
+  discovery-server:
+    build: ./discovery-server
+    container_name: discovery-server
+    environment:
+      - SERVER_PORT=${DISCOVERY_SERVER_PORT}
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:${CONFIG_SERVER_PORT}
+    ports: ["${DISCOVERY_SERVER_PORT}:${DISCOVERY_SERVER_PORT}"]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:${DISCOVERY_SERVER_PORT}/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    networks: [sren]
+
+  config-server:
+    build: ./config-server
+    container_name: config-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=native
+      - SERVER_PORT=${CONFIG_SERVER_PORT}
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    ports: ["${CONFIG_SERVER_PORT}:${CONFIG_SERVER_PORT}"]
+    volumes:
+      - ./config-repo:/config-repo:ro
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:${CONFIG_SERVER_PORT}/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    networks: [sren]
+
+  python-emotion:
+    build: ./ml-models/recommendation-engine  # or separate folder for Flask/FastAPI
+    container_name: python-emotion
+    environment:
+      - PORT=5001
+    ports: ["5001:5001"]
+    networks: [sren]
+
+  auth-service:
+    build: ./backend/auth-service
+    container_name: auth-service
+    environment:
+      - SERVER_PORT=${AUTH_PORT}
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:${CONFIG_SERVER_PORT}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:${DISCOVERY_SERVER_PORT}/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/${MYSQL_DATABASE}?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+      - JWT_SECRET=dev-secret-key
+    depends_on:
+      mysql:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+    ports: ["${AUTH_PORT}:${AUTH_PORT}"]
+    networks: [sren]
+
+  emotion-service:
+    build: ./backend/emotion-service
+    container_name: emotion-service
+    environment:
+      - SERVER_PORT=${EMOTION_PORT}
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:${CONFIG_SERVER_PORT}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:${DISCOVERY_SERVER_PORT}/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/${MYSQL_DATABASE}?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+      - EMOTION_PYTHON_API_URL=${PY_EMOTION_URL}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+      python-emotion:
+        condition: service_started
+    ports: ["${EMOTION_PORT}:${EMOTION_PORT}"]
+    networks: [sren]
+
+  recommender-service:
+    build: ./backend/recommender-service
+    container_name: recommender-service
+    environment:
+      - SERVER_PORT=${RECO_PORT}
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:${CONFIG_SERVER_PORT}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:${DISCOVERY_SERVER_PORT}/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/${MYSQL_DATABASE}?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+      emotion-service:
+        condition: service_started
+    ports: ["${RECO_PORT}:${RECO_PORT}"]
+    networks: [sren]
+
+  user-service:
+    build: ./backend/user-service
+    container_name: user-service
+    environment:
+      - SERVER_PORT=${USER_PORT}
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:${CONFIG_SERVER_PORT}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:${DISCOVERY_SERVER_PORT}/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/${MYSQL_DATABASE}?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+    ports: ["${USER_PORT}:${USER_PORT}"]
+    networks: [sren]
+
+  notification-service:
+    build: ./backend/notification-service
+    container_name: notification-service
+    environment:
+      - SERVER_PORT=${NOTIF_PORT}
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:${CONFIG_SERVER_PORT}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:${DISCOVERY_SERVER_PORT}/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/${MYSQL_DATABASE}?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+      user-service:
+        condition: service_started
+    ports: ["${NOTIF_PORT}:${NOTIF_PORT}"]
+    networks: [sren]
+
+  api-gateway:
+    build: ./backend/api-gateway
+    container_name: api-gateway
+    environment:
+      - SERVER_PORT=${GATEWAY_PORT}
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:${CONFIG_SERVER_PORT}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:${DISCOVERY_SERVER_PORT}/eureka
+    depends_on:
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+      emotion-service:
+        condition: service_started
+      recommender-service:
+        condition: service_started
+      user-service:
+        condition: service_started
+      notification-service:
+        condition: service_started
+    ports: ["${GATEWAY_PORT}:${GATEWAY_PORT}"]
+    networks: [sren]
+
+volumes:
+  dbdata:
+
+networks:
+  sren:
+    driver: bridge

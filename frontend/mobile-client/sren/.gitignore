@@ -1,0 +1,60 @@
+# Flutter/Dart/Pub related
+**/*.dart_tool/
+**/.dart_tool/**
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+**/build/
+
+# Generated files
+**/*.g.dart
+**/*.freezed.dart
+**/*.gr.dart
+**/*.mocks.dart
+
+# Android
+**/android/local.properties
+**/android/.gradle/
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+
+# iOS
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/app.flx
+**/ios/Flutter/app.zip
+**/ios/Flutter/flutter_assets/
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.*
+**/ios/.symlinks/
+**/ios/Pods/
+**/ios/Podfile.lock
+
+# macOS
+**/macos/Flutter/GeneratedPluginRegistrant.swift
+**/macos/Pods/
+**/macos/Podfile.lock
+
+# Windows
+**/windows/flutter/ephemeral/
+
+# Linux
+**/linux/flutter/ephemeral/
+
+# Web
+**/web/.dart_tool/
+
+# IDEs
+*.iml
+.idea/
+.vscode/
+
+# Misc
+**/.DS_Store

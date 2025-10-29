@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      default-filters:
+        - PreserveHostHeader
+        - RemoveRequestHeader=Cookie
+      routes:
+        - id: auth
+          uri: lb://auth-service
+          predicates: [ Path=/auth/** ]
+        - id: emotion
+          uri: lb://emotion-service
+          predicates: [ Path=/emotion/** ]
+        - id: recommender
+          uri: lb://recommender-service
+          predicates: [ Path=/recommend/** ]
+        - id: user
+          uri: lb://user-service
+          predicates: [ Path=/user/** ]
+        - id: notif
+          uri: lb://notification-service
+          predicates: [ Path=/notify/** ]
+      httpclient:
+        connect-timeout: 5000
+        response-timeout: 10s
+management.endpoints.web.exposure.include: "*"
+eureka.client.register-with-eureka: true
+eureka.client.fetch-registry: true
+server.port: ${SERVER_PORT:8080}

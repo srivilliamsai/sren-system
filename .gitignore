@@ -1,0 +1,25 @@
+.DS_Store
+.idea/
+.vscode/
+
+# Flutter/Dart build artifacts
+**/.dart_tool/
+**/.idea/
+**/build/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.packages
+
+# Android/iOS platform specific
+**/android/.gradle/
+**/android/local.properties
+**/ios/Pods/
+**/ios/Podfile.lock
+**/macos/Pods/
+**/macos/Podfile.lock
+
+# Generated files
+**/*.g.dart
+**/*.freezed.dart
+**/*.gr.dart
+**/*.mocks.dart

@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:mysql}:${MYSQL_PORT:3306}/auth_service
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  config:
+    import: optional:configserver:http://${CONFIG_SERVER_HOST:config-server}:${CONFIG_SERVER_PORT:8888}
+
+server:
+  port: 8081
+
+security:
+  jwt:
+    secret: "k3Ab5l9Q2wX7eR1pS5uV8yB2nM6cZ4xT7vY2sP9nL3fH8dJ6kL0qW4rT8uY6oI"
+    expiration-minutes: 120
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${DISCOVERY_HOST:discovery-server}:${DISCOVERY_PORT:8761}/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html

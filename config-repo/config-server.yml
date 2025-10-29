@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: file:/config-repo
+server.port: ${SERVER_PORT:8888}
+management.endpoints.web.exposure.include: "*"
