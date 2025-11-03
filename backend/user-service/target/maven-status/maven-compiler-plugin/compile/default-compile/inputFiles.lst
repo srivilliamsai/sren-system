@@ -1,0 +1,17 @@
+/Users/sriwilliamsai/eclipse-workspace/sren-system/backend/user-service/src/main/java/com/sren/userservice/repository/UserProfileRepository.java
+/Users/sriwilliamsai/eclipse-workspace/sren-system/backend/user-service/src/main/java/com/sren/userservice/config/OpenApiConfig.java
+/Users/sriwilliamsai/eclipse-workspace/sren-system/backend/user-service/src/main/java/com/sren/userservice/dto/UserProfileResponse.java
+/Users/sriwilliamsai/eclipse-workspace/sren-system/backend/user-service/src/main/java/com/sren/userservice/service/UserProfileService.java
+/Users/sriwilliamsai/eclipse-workspace/sren-system/backend/user-service/src/main/java/com/sren/userservice/exception/ApiError.java
+/Users/sriwilliamsai/eclipse-workspace/sren-system/backend/user-service/src/main/java/com/sren/userservice/dto/EmotionRecordDto.java
+/Users/sriwilliamsai/eclipse-workspace/sren-system/backend/user-service/src/main/java/com/sren/userservice/UserServiceApplication.java
+/Users/sriwilliamsai/eclipse-workspace/sren-system/backend/user-service/src/main/java/com/sren/userservice/dto/UpdateUserProfileRequest.java
+/Users/sriwilliamsai/eclipse-workspace/sren-system/backend/user-service/src/main/java/com/sren/userservice/dto/EmotionHistoryResponse.java
+/Users/sriwilliamsai/eclipse-workspace/sren-system/backend/user-service/src/main/java/com/sren/userservice/controller/UserProfileController.java
+/Users/sriwilliamsai/eclipse-workspace/sren-system/backend/user-service/src/main/java/com/sren/userservice/repository/UserEmotionRecordRepository.java
+/Users/sriwilliamsai/eclipse-workspace/sren-system/backend/user-service/src/main/java/com/sren/userservice/entity/UserProfile.java
+/Users/sriwilliamsai/eclipse-workspace/sren-system/backend/user-service/src/main/java/com/sren/userservice/client/dto/EmotionSnapshot.java
+/Users/sriwilliamsai/eclipse-workspace/sren-system/backend/user-service/src/main/java/com/sren/userservice/service/impl/UserProfileServiceImpl.java
+/Users/sriwilliamsai/eclipse-workspace/sren-system/backend/user-service/src/main/java/com/sren/userservice/exception/GlobalExceptionHandler.java
+/Users/sriwilliamsai/eclipse-workspace/sren-system/backend/user-service/src/main/java/com/sren/userservice/entity/UserEmotionRecord.java
+/Users/sriwilliamsai/eclipse-workspace/sren-system/backend/user-service/src/main/java/com/sren/userservice/client/EmotionClient.java
