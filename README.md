@@ -1,6 +1,6 @@
 # SREN System – Smart Recommendation using Emotion Recognition
 
-SREN is a modular, Spring Boot–based backend capable of recognising user emotions and delivering personalised recommendations.  
+SREN is a modular, Spring Boot–based backend capable of recognising user emotions and delivering personalised recommendations.
 It is composed of multiple Java microservices, a Spring Cloud Gateway, Eureka discovery, Config Server, a MySQL datastore, and a lightweight Python (Flask) inference stub.
 
 ---
@@ -26,9 +26,9 @@ Services communicate using REST + Feign clients, authenticate through JWT, and r
 
 ## Prerequisites
 
-1. **Java 17** (for local development outside Docker)  
-2. **Maven 3.9+**  
-3. **Docker & Docker Compose v2**  
+1. **Java 17** (for local development outside Docker)
+2. **Maven 3.9+**
+3. **Docker & Docker Compose v2**
 4. **Python 3.10+** *(only if you intend to run the Flask service directly)*
 
 Clone the repository and switch to the project root:
@@ -42,8 +42,8 @@ cd sren-system
 
 ## Configuration
 
-- All runtime configuration defaults live in `config-server/src/main/resources/config`.  
-- `.env` in the repository root controls Docker Compose variables (ports, database credentials, service URLs).  
+- All runtime configuration defaults live in `config-server/src/main/resources/config`.
+- `.env` in the repository root controls Docker Compose variables (ports, database credentials, service URLs).
 - Each Spring Boot service reads configuration from Config Server via `spring.config.import=optional:configserver:http://${CONFIG_SERVER_HOST:config-server}:${CONFIG_SERVER_PORT:8888}`. Environment overrides can be supplied as container variables or JVM properties.
 
 ---
@@ -190,4 +190,3 @@ Ensure you export the environment variables found in `.env` (e.g., `CONFIG_SERVE
 ## License
 
 Project licensing is not defined in this repository. Add an appropriate license file if you intend to distribute or open source the work.
-
